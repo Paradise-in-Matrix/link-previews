@@ -1,6 +1,6 @@
-{:id :terminal-profiles
- :name "Terminal Profiles"
- :description "Overrides the default profile popover with a terminal aesthetic."
+{:id :link-previews
+ :name "Link Previews"
+ :description "Extends the link preview behavior by allowing extra sites like Reddit, Twitter, and Youtube to be neatly embedded."
+ :theme-url "https://cdn.jsdelivr.net/gh/Paradise-in-Matrix/link-preview@main/dist/link-preview.css"
  :version "1.0.0"
- :theme-url "https://cdn.jsdelivr.net/gh/Paradise-in-Matrix/plugin-template@main/dist/retro.css"
  :external-scripts []}
