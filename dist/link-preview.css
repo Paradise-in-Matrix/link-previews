@@ -1,0 +1,41 @@
+.youtube-embed-card {
+    margin-top: 8px;
+    max-width: 520px;
+    background: var(--bg-secondary, rgba(128, 128, 128, 0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.youtube-title-link {
+    font-size: 0.95em;
+    font-weight: bold;
+    color: var(--text-primary);
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.youtube-site-label {
+    font-size: 0.75em;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+}
