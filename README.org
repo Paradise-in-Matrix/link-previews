@@ -1,0 +1,142 @@
+
+* Plugin Template
+
+For downstream developers, this serves as an example repo for creating plugins
+and exposing them to be used inside a Paradise client.
+
+Much of this is subject to change, but the core logic of a plugin should be
+more or less safe. The idea being that you'd write the plugin in
+a similar manner to how you might contribute directly to the main repo.
+It should feel very fluid and native.
+
+At the current moment, building and testing is more or less inline the
+main repo and move out when ready to deploy as a plugin.
+
+This will not be the mechanism for too long, but it is mentioned
+to provide clarity in the current simple developer process.
+
+Later it would be far more reasonable to be able to declare
+the upstream as a dependency and launch the plugin in the
+exact environment it is intended to run within. And to provide
+a clean mechanism for reloading the plugin at that.
+
+I believe SCI can facilitate REPL behavior, so I'm sure it can
+be easily done.
+
+**** TODO Plugin Example
+
+***** UI
+
+#+begin_src clojurescript :tangle src/ui.cljs
+(defoverride profile-preview-content [{:keys [member]}]
+  [:div {:style {:background "#000" :padding "16px" :border "1px solid #333"}}
+   [:h3 {:style {:color "#0f0" :margin 0 :font-family "monospace"}}
+    (str "> " (:display-name member))]
+   [:p {:style {:color "#555" :font-size "12px" :font-family "monospace"}}
+    (:user-id member)]])
+#+end_src
+
+
+
+#+begin_src css :tangle dist/retro.css
+
+body, .plugin-installer-panel, .active-theme-card, .active-plugin-item {
+    background-color: #050505 !important;
+    color: #33ff00 !important;
+    font-family: 'Courier New', Courier, monospace !important;
+    border-color: #33ff00 !important;
+}
+
+h3, h4, span {
+    color: #33ff00 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+button.form-button {
+    background-color: transparent !important;
+    color: #33ff00 !important;
+    border: 1px solid #33ff00 !important;
+    border-radius: 0 !important;
+    text-transform: uppercase !important;
+}
+
+button.form-button:hover {
+    background-color: #33ff00 !important;
+    color: #000 !important;
+}
+
+#+end_src
+
+
+
+
+***** Worker
+
+#+begin_src clojurescript :tangle src/worker.cljs
+(worker/register :plugin-boot
+                 (fn [_]
+                   {:status :success}))
+
+#+end_src
+
+***** Manifest
+
+For the theme we use jsDelivr as Github provides the wrong content type to be
+useful for serving from their endpoint.
+
+#+begin_src clojurescript :tangle manifest.edn
+
+{:id :terminal-profiles
+ :name "Terminal Profiles"
+ :description "Overrides the default profile popover with a terminal aesthetic."
+ :version "1.0.0"
+ :theme-url "https://cdn.jsdelivr.net/gh/Paradise-in-Matrix/plugin-template@main/dist/retro.css"
+ :external-scripts []}
+
+#+end_src
+
+
+
+The build script below will generate plugins into the EDN we deliver to
+the client
+
+#+begin_src clojurescript :tangle build.cljs
+(ns build
+  (:require ["fs" :as fs]
+            ["path" :as path]
+            [clojure.edn :as edn]))
+
+(defn build []
+  (let [metadata-str (fs/readFileSync "manifest.edn" "utf8")
+        metadata     (edn/read-string metadata-str)
+        ui-code      (fs/readFileSync "src/ui.cljs" "utf8")
+        worker-code  (fs/readFileSync "src/worker.cljs" "utf8")
+
+        payload (assoc metadata
+                       :ui-form-str (str "(do\n" ui-code "\n)")
+                       :worker-form-str (str "(do\n" worker-code "\n)"))
+
+        dist-dir "dist"
+        out-file (path/join dist-dir "plugin.edn")]
+
+    (when-not (fs/existsSync dist-dir)
+      (fs/mkdirSync dist-dir))
+
+    (fs/writeFileSync out-file (pr-str payload))
+    (println "Plugin packed successfully to" out-file)))
+
+(build)
+#+end_src
+
+
+Then run nbb
+
+
+
+
+
+
+
+
+

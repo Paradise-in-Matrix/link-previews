@@ -1,0 +1,12 @@
+{:paths ["src"]
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        org.clojure/clojurescript {:mvn/version "1.11.132"}
+        thheller/shadow-cljs {:mvn/version "2.26.2"}
+        jtk-dvlp/cljs-workers {:git/url "https://github.com/Paradise-in-Matrix/cljs-workers.git"
+                               :git/sha "0ee7acd86aca1f9b32e566408ba43f901491f2b9"}
+;;        paradise/client {:local/root "../Paradise"}
+        paradise/client {:git/url "https://github.com/Paradise-in-Matrix/Paradise.git"
+                               :git/sha "fd22382ff4cb5a673e0822695246e4e4653d517c"}
+        }
+ :aliases {:build {:main-opts ["-m" "utils.build"]}}}
+
