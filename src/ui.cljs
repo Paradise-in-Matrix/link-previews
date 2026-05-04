@@ -3,6 +3,8 @@
   (:require [client.state :as state]
             [re-frame.core :as re-frame]
             [reagent.core :as r]
+            [capacitor.browser :refer [Browser]]
+            [capacitor.core :refer [Capacitor]]
             [utils.images :refer [mxc->url mxc-image]]
             [clojure.string :as str]
             [cljs.core.async :refer [go <!]]
