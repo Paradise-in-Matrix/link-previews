@@ -11,6 +11,9 @@
             [cljs-workers.core :as main]
             [container.timeline.item :as item]))
 
+(def platform (.getPlatform Capacitor))
+(def is-ios? (= platform "ios"))
+
 (re-frame/reg-event-fx
  :media/fetch-plugin-preview
  (fn [{:keys [db]} [_ url]]
@@ -32,8 +35,11 @@
     (when match
       (second match))))
 
+
+
 (defoverride link-preview-card [url hs-url]
-  (let [{:keys [status data]} @(re-frame/subscribe [:media/url-preview url])]
+  (let [{:keys [status data]} @(re-frame/subscribe [:media/url-preview url])
+        is-playing?           @(re-frame/subscribe [:media/playing-inline? url])]
     (cond
       (= status :loading)
       [:div.link-preview-container.is-loading
@@ -53,18 +59,45 @@
             yt-id    (extract-youtube-id url)]
         (if yt-id
           [:div.youtube-embed-card
-           [:div.video-wrapper
-            [:iframe {:src (str "https://www.youtube.com/embed/" yt-id)
-                      :credentialless "true"
-                      :sandbox "allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"
-                      :allowFullScreen "true"
-                      :allow "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"}]]
+           (if is-playing?
+             [:div.video-wrapper
+              {:style {:position "relative"
+                       :aspect-ratio "16/9"
+                       :overflow "hidden"
+                       :border-radius "8px"
+                       :background-color "#000"}}
+              [:iframe {:src (str "https://www.youtube-nocookie.com/embed/" yt-id "?autoplay=1&playsinline=1")
+                        :credentialless "true"
+                        :style {:width "100%"
+                                :height "100%"
+                                :border "none"}
+                        :allowFullScreen "true"
+                        :allow "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"}]]
+             [:div.video-wrapper
+              {:style    {:position "relative"
+                          :cursor "pointer"
+                          :aspect-ratio "16/9"
+                          :overflow "hidden"
+                          :border-radius "8px"
+                          :background-color "#000"}
+               :on-click #(if is-ios?
+                            (-> Browser (.open (clj->js {:url (str "https://www.youtube.com/watch?v=" yt-id)
+                                                         :presentationStyle "popover"})))
+                            (re-frame/dispatch [:media/play-inline url]))}
+              [:img {:src (or img-url (str "https://img.youtube.com/vi/" yt-id "/hqdefault.jpg"))
+                     :style {:width "100%" :height "100%" :object-fit "cover"}}]
+              [:div.play-button-overlay
+               {:style {:position "absolute" :top "50%" :left "50%"
+                        :transform "translate(-50%, -50%)"
+                        :background "rgba(0,0,0,0.7)" :border-radius "50%"
+                        :width "60px" :height "60px" :display "flex"
+                        :align-items "center" :justify-content "center"}}
+               [:svg {:width "30" :height "30" :viewBox "0 0 24 24" :fill "white"}
+                [:path {:d "M8 5v14l11-7z"}]]]])
            [:div.embed-content
             (when og:title
-              [:a.youtube-title-link {:href url :target "_blank" :rel "noopener noreferrer"}
-               og:title])
+               [:a.youtube-title-link {:href url :target "_blank" :rel "noopener noreferrer"} og:title])
             [:div.youtube-site-label "YouTube"]]]
-
           (when (or og:title og:description)
             [:a.rich-embed-card {:href url :target "_blank" :rel "noopener noreferrer"}
              [:div.embed-content
@@ -76,6 +109,8 @@
              (when img-url
                [:div.embed-thumbnail
                 [:img {:src img-url}]])]))))))
+
+
 
 (defoverride message-link-preview [msg-type-tag raw-body]
   (let [first-url (when (#{"Text" "Notice" "Emote"} msg-type-tag)
