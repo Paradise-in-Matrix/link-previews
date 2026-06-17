@@ -1,15 +1,16 @@
-(ns ui
-  (:require-macros [utils.macros :refer [defoverride]])
-  (:require [client.state :as state]
+(ns paradise.ui.container.timeline.item
+  (:require-macros [paradise.shared.utils.macros :refer [defoverride]])
+  (:require [paradise.shared.client.state :as state]
             [re-frame.core :as re-frame]
             [reagent.core :as r]
             [capacitor.browser :refer [Browser]]
             [capacitor.core :refer [Capacitor]]
-            [utils.images :refer [mxc->url mxc-image]]
+            [paradise.shared.utils.helpers]
+            [paradise.media.component :refer [mxc->url]]
             [clojure.string :as str]
             [cljs.core.async :refer [go <!]]
             [cljs-workers.core :as main]
-            [container.timeline.item :as item]))
+            [paradise.ui.container.timeline.item :as item]))
 
 (def platform (.getPlatform Capacitor))
 (def is-ios? (= platform "ios"))
@@ -138,10 +139,21 @@
                 [:img {:src img-url
                        :style {:width "100%" :height "100%" :object-fit "cover"}}]])]))))))
 
+(defoverride message-text [{:keys [body html]}]
+  (if (seq html)
+    [:span.body "BIG SOUP"]
+    [:span.body "BIG SOUP"]))
+
+
+
+(defn extract-first-url [text]
+  (when text
+    (when-let [match (re-find #"https?://[^\s\"'<>]+" text)]
+      (str/replace match #"[.,:;!?]$" ""))))
 
 (defoverride message-link-preview [msg-type-tag raw-body]
   (let [first-url (when (#{"Text" "Notice" "Emote"} msg-type-tag)
-                    (item/extract-first-url raw-body))]
+                    (extract-first-url raw-body))]
     (when first-url
       (let [hs-url        @(re-frame/subscribe [:sdk/homeserver-url])
             policy        @(re-frame/subscribe [:settings/media-preview-policy])

@@ -1,9 +1,9 @@
-(ns worker
+(ns paradise.engine.timeline
   (:require [clojure.string :as str]
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
             [cljs-workers.worker :as worker]
-            [utils.net :as net]))
+            [net :as net]))
 
 (worker/register :get-plugin-url-preview
   (fn [{:keys [url]}]
