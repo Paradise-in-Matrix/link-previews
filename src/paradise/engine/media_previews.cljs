@@ -1,4 +1,4 @@
-(ns paradise.engine.timeline
+(ns paradise.engine.media-previews
   (:require [clojure.string :as str]
             [cljs.core.async :refer [go <!]]
             [cljs.core.async.interop :refer-macros [<p!]]
