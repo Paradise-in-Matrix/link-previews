@@ -7,6 +7,6 @@
                                :git/sha "93c29055b3e3ba45a8f4cbcf55698bcf6bf1c3f5"}
 ;;        paradise/client {:local/root "../Paradise"}
         paradise/client {:git/url "https://github.com/Paradise-in-Matrix/Paradise.git"
-                         :git/sha "defb906244673c4b6dadeab9fd00ef29839a799c"}}
+                         :git/sha "5df6b7d168ed51b80974c5d280324a19b9640d64"}}
  :aliases {:extract {:main-opts ["-m" "lambda-lifter"]}
            :build {:main-opts ["-m" "plugin-build"]}}}
