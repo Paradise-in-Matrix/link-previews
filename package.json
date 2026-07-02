@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "A custom plugin for Paradise",
     "scripts": {
-        "build": "clj -M:build",
+        "build": "clj -M:extract && clj -M:build",
         "serve": "npx serve dist -C --cors"
     }
 }
