@@ -6,8 +6,7 @@
         jtk-dvlp/cljs-workers {:git/url "https://github.com/Paradise-in-Matrix/cljs-workers.git"
                                :git/sha "93c29055b3e3ba45a8f4cbcf55698bcf6bf1c3f5"}
 ;;        paradise/client {:local/root "../Paradise"}
-
         paradise/client {:git/url "https://github.com/Paradise-in-Matrix/Paradise.git"
-                         :git/sha "704c30301112280fb0848209236b71b7560cd447"}}
-
- :aliases {:build {:main-opts ["-m" "plugin-build"]}}}
+                         :git/sha "defb906244673c4b6dadeab9fd00ef29839a799c"}}
+ :aliases {:extract {:main-opts ["-m" "lambda-lifter"]}
+           :build {:main-opts ["-m" "plugin-build"]}}}
