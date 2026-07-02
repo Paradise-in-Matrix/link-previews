@@ -9,7 +9,7 @@
             [paradise.media.component :refer [mxc->url]]
             [clojure.string :as str]
             [cljs.core.async :refer [go <!]]
-            [cljs-workers.core :as main]
+            [cljs-workers.mesh :as mesh]
             [paradise.ui.container.timeline.item :as item]))
 
 (def platform (.getPlatform Capacitor))
