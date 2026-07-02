@@ -20,7 +20,7 @@
  (fn [{:keys [db]} [_ url]]
    (when-not (get-in db [:url-previews url])
      (go
-       (let [res (<! (main/do-with-pool! @state/!engine-pool
+       (let [res (<! (mesh/do-with-thread! :engine-pool
                                          {:handler :get-plugin-url-preview
                                           :arguments {:url url}}))]
          (if (= (:status res) "success")
